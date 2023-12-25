@@ -1,0 +1,50 @@
+class CustomerPreferences {
+  constructor(preferences) {
+    this.preferences = preferences;
+  }
+
+  validate() {
+    const rules = [
+      {
+        condition: this.preferences.emailPreferences && !isValidEmail(this.preferences.email),
+        message: "Invalid email address for email preferences."
+      },
+      {
+        condition: this.preferences.notificationPreferences && !isValidPhone(this.preferences.phoneNumber),
+        message: "Invalid phone number for notification preferences."
+      },
+    ];
+
+    const errors = rules
+      .filter(rule => rule.condition)
+      .map(rule => rule.message);
+
+    return {
+      isValid: errors.length === 0,
+      errors: errors
+    };
+  }
+}
+
+const customerPreferencesData = {
+  emailPreferences: true,
+  email: "invalidEmail",
+  notificationPreferences: true,
+  phoneNumber: "12345678"
+};
+
+const customerPreferences = new CustomerPreferences(customerPreferencesData);
+const validationResult = customerPreferences.validate();
+
+if (validationResult.isValid) {
+  console.log("Customer preferences are valid!");
+} else {
+  console.error("Validation errors:", validationResult.errors);
+}
+function isValidEmail(email) {
+  return /\S+@\S+\.\S+/.test(email);
+}
+
+function isValidPhone(phoneNumber) {
+  return /^\d{10}$/.test(phoneNumber);
+}
